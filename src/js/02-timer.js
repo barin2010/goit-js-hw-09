@@ -10,17 +10,21 @@ const options = {
   onClose(selectedDates) {
     const selectedDate = selectedDates[0];
 
-    if (selectedDate < new Date()) {
-      Notiflix.Notify.failure('Please choose a date in the future.');
-      return;
-    }
+    if (selectedDate) {
+      const now = new Date();
 
-    const startButton = document.querySelector('[data-start]');
-    startButton.disabled = false;
+      if (selectedDate <= now) {
+        Notiflix.Notify.failure('Please choose a date and time in the future.');
+      } else {
+        const startButton = document.querySelector('[data-start]');
+        startButton.disabled = false;
+      }
+    }
   },
 };
 
-flatpickr('#datetime-picker', options);
+const datetimePicker = document.querySelector('#datetime-picker');
+flatpickr(datetimePicker, options);
 
 const refs = {
   days: document.querySelector('[data-days]'),
@@ -33,19 +37,19 @@ const refs = {
 let countdownInterval;
 
 refs.startButton.addEventListener('click', () => {
-  if (!refs.startButton.disabled) {
-    const selectedDate = flatpickr.parseDate(
-      document.querySelector('#datetime-picker').value
-    );
+  const selectedDate = datetimePicker._flatpickr.selectedDates[0];
+
+  if (selectedDate) {
     const now = new Date();
 
     if (selectedDate <= now) {
-      Notiflix.Notify.failure('Please choose a date in the future.');
-      return;
+      Notiflix.Notify.failure('Please choose a date and time in the future.');
+    } else {
+      startCountdown(selectedDate);
+      refs.startButton.disabled = true;
     }
-
-    startCountdown(selectedDate);
-    refs.startButton.disabled = true;
+  } else {
+    Notiflix.Notify.failure('Please choose a valid date and time.');
   }
 });
 

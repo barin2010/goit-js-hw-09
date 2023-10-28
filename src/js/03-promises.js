@@ -1,5 +1,6 @@
 const form = document.querySelector('.form');
-const resultDiv = document.querySelector('.results');
+const results = document.createElement('div');
+document.body.appendChild(results);
 
 form.addEventListener('submit', handleSubmit);
 
@@ -19,12 +20,12 @@ function createPromise(position, delay) {
 function handlePromise(position, delay) {
   createPromise(position, delay)
     .then(({ position, delay }) => {
-      const message = `✅ Fulfilled promise ${position} in ${delay}ms`;
-      addResult(message);
+      console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      addResult(`✅ Fulfilled promise ${position} in ${delay}ms`);
     })
     .catch(({ position, delay }) => {
-      const message = `❌ Rejected promise ${position} in ${delay}ms`;
-      addResult(message);
+      console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+      addResult(`❌ Rejected promise ${position} in ${delay}ms`);
     })
     .finally(() => {
       const nextPromise = promises.shift();
@@ -60,5 +61,5 @@ function handleSubmit(event) {
 function addResult(message) {
   const div = document.createElement('div');
   div.textContent = message;
-  resultDiv.appendChild(div);
+  results.appendChild(div);
 }
