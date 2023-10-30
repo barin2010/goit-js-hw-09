@@ -15,9 +15,9 @@ const options = {
 
       if (selectedDate <= now) {
         Notiflix.Notify.failure('Please choose a date and time in the future.');
+        document.querySelector('[data-start]').disabled = true;
       } else {
-        const startButton = document.querySelector('[data-start]');
-        startButton.disabled = false;
+        document.querySelector('[data-start]').disabled = false;
       }
     }
   },
@@ -35,6 +35,7 @@ const refs = {
 };
 
 let countdownInterval;
+refs.startButton.disabled = true;
 
 refs.startButton.addEventListener('click', () => {
   const selectedDate = datetimePicker._flatpickr.selectedDates[0];
@@ -65,6 +66,11 @@ function startCountdown(endTime) {
     }
     const timeObject = convertMs(timeDifference);
     updateTimerValues(timeObject);
+    if (timeObject.days === "00" && timeObject.hours === "00" && timeObject.minutes === "00" && timeObject.seconds === "00") {
+      clearInterval(countdownInterval);
+      Notiflix.Notify.success('Timer has ended!');
+      return;
+    }
   }, 1000);
 }
 
